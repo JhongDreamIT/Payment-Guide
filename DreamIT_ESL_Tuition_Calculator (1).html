@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DreamIT ESL — Tuition Payment Plans</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #1e4d35;
+    --bg-deep:   #163828;
+    --green:     #3dbf5e;
+    --green-mid: #2ea04e;
+    --green-dim: #1a7a38;
+    --white:     #ffffff;
+    --text-dark: #1a2e22;
+    --text-mid:  #4a6b55;
+    --text-light:#8ab898;
+    --gold:      #f5c842;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Open Sans', sans-serif;
+    background: var(--bg-deep);
+    min-height: 100vh;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  /* ── Page container — fluid on mobile, capped on desktop ── */
+  .page {
+    background: var(--bg);
+    width: 100%;
+    max-width: 700px;
+    min-height: 100vh;
+    padding: clamp(28px, 6vw, 52px) clamp(16px, 5vw, 44px) clamp(40px, 6vw, 60px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* dot grid decorations */
+  .dots {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(5, 6px);
+    gap: 6px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--green); display: block; }
+  .dots-tl { top: 16px; left: 16px; }
+  .dots-br { bottom: 56px; right: 16px; }
+  @media (max-width: 400px) { .dots { display: none; } }
+
+  /* ── Header ── */
+  .brand { text-align: center; margin-bottom: 8px; }
+  .brand-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: clamp(17px, 4vw, 22px);
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+  .brand-name em { color: var(--green); font-style: normal; }
+  .brand-tag {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(8px, 2vw, 10px);
+    font-weight: 600;
+    color: var(--text-light);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 3px;
+  }
+
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(22px, 6vw, 34px);
+    font-weight: 900;
+    color: var(--white);
+    text-align: center;
+    line-height: 1.15;
+    margin: 12px 0 28px;
+  }
+
+  /* ── Tuition fixed display ── */
+  .control-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(61,191,94,0.22);
+    border-radius: 14px;
+    padding: clamp(14px, 3vw, 20px) clamp(16px, 4vw, 24px);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .control-card label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(10px, 2.5vw, 12px);
+    font-weight: 700;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .tuition-display {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(22px, 5.5vw, 30px);
+    font-weight: 900;
+    color: var(--white);
+  }
+  .tuition-note {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(9px, 2vw, 11px);
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── Discount toggles ── */
+  .toggles {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .toggle-btn {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(61,191,94,0.18);
+    border-radius: 12px;
+    padding: clamp(10px, 2.5vw, 13px) clamp(12px, 3vw, 16px);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .toggle-btn.active {
+    background: rgba(61,191,94,0.13);
+    border-color: var(--green);
+  }
+  .dot-check {
+    width: 20px; height: 20px; flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(61,191,94,0.45);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .toggle-btn.active .dot-check {
+    background: var(--green);
+    border-color: var(--green);
+  }
+  .toggle-btn.active .dot-check::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--white);
+  }
+  .toggle-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(11px, 2.8vw, 13px);
+    font-weight: 700;
+    color: var(--white);
+  }
+  .toggle-amount {
+    margin-left: auto;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(11px, 2.8vw, 13px);
+    font-weight: 800;
+    color: var(--green);
+  }
+
+  /* ── Plan rows ── */
+  .plans { display: flex; flex-direction: column; gap: 12px; }
+
+  .plan-row {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    animation: slideIn 0.4s ease both;
+    min-height: 76px;
+  }
+  .plan-row:nth-child(1) { animation-delay: 0.05s; }
+  .plan-row:nth-child(2) { animation-delay: 0.12s; }
+  .plan-row:nth-child(3) { animation-delay: 0.19s; }
+  .plan-row:nth-child(4) { animation-delay: 0.26s; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .plan-arrow {
+    width: clamp(60px, 13vw, 90px);
+    flex-shrink: 0;
+    background: var(--green);
+    clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%);
+    border-radius: 10px 0 0 10px;
+    display: flex; align-items: center; justify-content: flex-start;
+    padding-left: clamp(12px, 3.5vw, 22px);
+    transition: background 0.3s;
+    z-index: 1;
+  }
+  .plan-row.best .plan-arrow { background: var(--gold); }
+  .plan-arrow .num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(20px, 5.5vw, 32px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+  }
+  .plan-row.best .plan-arrow .num { color: var(--text-dark); }
+
+  .plan-body {
+    background: var(--white);
+    border-radius: 0 14px 14px 0;
+    flex: 1;
+    padding: clamp(10px, 2.5vw, 15px) clamp(12px, 3vw, 20px);
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 16px);
+    margin-left: -3px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+  .plan-row.best .plan-body { background: #fffbe6; }
+
+  .best-badge {
+    display: none;
+    position: absolute;
+    top: 7px; right: 10px;
+    background: var(--gold);
+    color: var(--text-dark);
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(7px, 1.8vw, 9px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .plan-row.best .best-badge { display: block; }
+
+  .plan-info { flex: 1; min-width: 0; }
+  .plan-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(12px, 3vw, 15px);
+    font-weight: 800;
+    color: var(--green-dim);
+    margin-bottom: 2px;
+  }
+  .plan-row.best .plan-name { color: #9a7000; }
+  .plan-desc {
+    font-size: clamp(10px, 2.4vw, 12px);
+    color: var(--text-mid);
+    line-height: 1.4;
+  }
+  @media (max-width: 360px) { .plan-desc { display: none; } }
+
+  .savings-tag {
+    display: inline-block;
+    background: rgba(61,191,94,0.12);
+    color: var(--green-mid);
+    font-size: clamp(9px, 2.2vw, 11px);
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 4px;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .plan-row.best .savings-tag { background: rgba(245,200,66,0.18); color: #9a7000; }
+
+  .plan-numbers {
+    text-align: right;
+    flex-shrink: 0;
+    min-width: clamp(88px, 22vw, 128px);
+  }
+  .monthly-label, .total-label {
+    font-size: clamp(8px, 2vw, 10px);
+    color: var(--text-mid);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .total-label { margin-top: 5px; }
+  .monthly-val {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(13px, 3.2vw, 17px);
+    font-weight: 900;
+    color: var(--text-dark);
+    line-height: 1.1;
+  }
+  .total-val {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(11px, 2.8vw, 13px);
+    font-weight: 700;
+    color: var(--green-dim);
+  }
+  .plan-row.best .total-val { color: #9a7000; }
+
+  /* ── Summary table ── */
+  .summary {
+    margin-top: 28px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(61,191,94,0.18);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .summary-header {
+    background: rgba(61,191,94,0.12);
+    padding: 12px 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(10px, 2.5vw, 12px);
+    font-weight: 700;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; min-width: 300px; border-collapse: collapse; }
+  th {
+    padding: clamp(8px, 2vw, 11px) clamp(10px, 2.5vw, 18px);
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(9px, 2.2vw, 11px);
+    font-weight: 700;
+    color: var(--text-light);
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    white-space: nowrap;
+  }
+  th:not(:first-child) { text-align: right; }
+  td {
+    padding: clamp(9px, 2.2vw, 12px) clamp(10px, 2.5vw, 18px);
+    font-size: clamp(11px, 2.6vw, 13px);
+    color: var(--white);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  td:not(:first-child) { text-align: right; }
+  tr:last-child td { border-bottom: none; }
+  td.plan-col {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: clamp(10px, 2.4vw, 12px);
+    color: var(--text-light);
+    white-space: nowrap;
+  }
+  td.highlight { color: var(--green); font-weight: 700; }
+  td.gold-hl   { color: var(--gold);  font-weight: 700; }
+  tr.best-row  { background: rgba(245,200,66,0.06); }
+
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="dots dots-tl">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="dots dots-br">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="brand">
+    <div class="brand-name">Dream<em>IT</em> ESL</div>
+    <span class="brand-tag">Language School</span>
+  </div>
+
+  <h1>Tuition Payment Plans</h1>
+
+  <div class="control-card">
+    <label>Base Tuition</label>
+    <div class="tuition-display">$2,075.00</div>
+    <div class="tuition-note">Per Semester · Fixed</div>
+  </div>
+
+  <div class="toggles">
+    <div class="toggle-btn active" id="toggleCash" onclick="toggle('cash')">
+      <div class="dot-check"></div>
+      <span class="toggle-label">Cash Discount</span>
+      <span class="toggle-amount">−$40</span>
+    </div>
+    <div class="toggle-btn active" id="toggleReview" onclick="toggle('review')">
+      <div class="dot-check"></div>
+      <span class="toggle-label">Google Review</span>
+      <span class="toggle-amount">−$15</span>
+    </div>
+  </div>
+
+  <div class="plans">
+
+    <div class="plan-row best" id="row0">
+      <div class="plan-arrow"><span class="num">1</span></div>
+      <div class="plan-body">
+        <div class="best-badge">Best Value</div>
+        <div class="plan-info">
+          <div class="plan-name">Full Pay</div>
+          <div class="plan-desc">One-time payment, max discounts applied.</div>
+          <div class="savings-tag" id="savings0">Saving $55.00</div>
+        </div>
+        <div class="plan-numbers">
+          <div class="monthly-label">Pay Once</div>
+          <div class="monthly-val" id="monthly0">$2,020.00</div>
+          <div class="total-label">Total Due</div>
+          <div class="total-val" id="total0">$2,020.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plan-row" id="row1">
+      <div class="plan-arrow"><span class="num">2</span></div>
+      <div class="plan-body">
+        <div class="best-badge">Best Value</div>
+        <div class="plan-info">
+          <div class="plan-name">2-Month Plan</div>
+          <div class="plan-desc">Two equal payments. No processing fee.</div>
+          <div class="savings-tag" id="savings1">No fee</div>
+        </div>
+        <div class="plan-numbers">
+          <div class="monthly-label">Per Month</div>
+          <div class="monthly-val" id="monthly1">$1,037.50</div>
+          <div class="total-label">Total Due</div>
+          <div class="total-val" id="total1">$2,075.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plan-row" id="row2">
+      <div class="plan-arrow"><span class="num">3</span></div>
+      <div class="plan-body">
+        <div class="best-badge">Best Value</div>
+        <div class="plan-info">
+          <div class="plan-name">3-Month Plan</div>
+          <div class="plan-desc">Three equal payments + $50 plan fee.</div>
+          <div class="savings-tag" id="savings2">+$50 fee</div>
+        </div>
+        <div class="plan-numbers">
+          <div class="monthly-label">Per Month</div>
+          <div class="monthly-val" id="monthly2">$691.67</div>
+          <div class="total-label">Total Due</div>
+          <div class="total-val" id="total2">$2,125.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="plan-row" id="row3">
+      <div class="plan-arrow"><span class="num">4</span></div>
+      <div class="plan-body">
+        <div class="best-badge">Best Value</div>
+        <div class="plan-info">
+          <div class="plan-name">4-Month Plan</div>
+          <div class="plan-desc">Four equal payments + $100 plan fee.</div>
+          <div class="savings-tag" id="savings3">+$100 fee</div>
+        </div>
+        <div class="plan-numbers">
+          <div class="monthly-label">Per Month</div>
+          <div class="monthly-val" id="monthly3">$518.75</div>
+          <div class="total-label">Total Due</div>
+          <div class="total-val" id="total3">$2,175.00</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="summary">
+    <div class="summary-header">📊 &nbsp;Full Comparison Table</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Plan</th>
+            <th>Monthly</th>
+            <th>Fee</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+
+
+</div>
+
+<script>
+  const base = 2075;
+  let cashOn  = true;
+  let revOn   = true;
+
+  const fmt = v => '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  function toggle(which) {
+    if (which === 'cash') {
+      cashOn = !cashOn;
+      document.getElementById('toggleCash').classList.toggle('active', cashOn);
+    } else {
+      revOn = !revOn;
+      document.getElementById('toggleReview').classList.toggle('active', revOn);
+    }
+    render();
+  }
+
+  function render() {
+    const cashDiscount   = cashOn ? 40 : 0;   // only applies to Full Pay
+    const reviewDiscount = revOn  ? 15 : 0;   // applies to all plans
+
+    const fullPayTotal = base - cashDiscount - reviewDiscount;
+    const otherBase    = base - reviewDiscount;  // no cash discount on plans 2–4
+
+    const plans = [
+      { monthly: fullPayTotal,       total: fullPayTotal,       fee: 0,   fee_label: '$0.00',   savingsLabel: (cashDiscount + reviewDiscount) > 0 ? 'Saving ' + fmt(cashDiscount + reviewDiscount) : 'No discounts' },
+      { monthly: otherBase / 2,      total: otherBase,          fee: 0,   fee_label: '$0.00',   savingsLabel: reviewDiscount > 0 ? 'Saving ' + fmt(reviewDiscount) : 'No fee' },
+      { monthly: otherBase / 3,      total: otherBase + 50,     fee: 50,  fee_label: '$50.00',  savingsLabel: reviewDiscount > 0 ? 'Saving ' + fmt(reviewDiscount) : '+$50 fee' },
+      { monthly: otherBase / 4,      total: otherBase + 100,    fee: 100, fee_label: '$100.00', savingsLabel: reviewDiscount > 0 ? 'Saving ' + fmt(reviewDiscount) : '+$100 fee' },
+    ];
+
+    const bestIdx = plans.reduce((bi, p, i) => p.total < plans[bi].total ? i : bi, 0);
+    const names   = ['Full Pay', '2-Month Plan', '3-Month Plan', '4-Month Plan'];
+
+    plans.forEach((p, i) => {
+      const isBest = i === bestIdx;
+      document.getElementById('row'     + i).classList.toggle('best', isBest);
+      document.getElementById('monthly' + i).textContent = fmt(p.monthly);
+      document.getElementById('total'   + i).textContent = fmt(p.total);
+      document.getElementById('savings' + i).textContent = p.savingsLabel;
+    });
+
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    plans.forEach((p, i) => {
+      const isBest = i === bestIdx;
+      const tr = document.createElement('tr');
+      if (isBest) tr.className = 'best-row';
+      tr.innerHTML = `
+        <td class="plan-col">${names[i]}${isBest ? ' ⭐' : ''}</td>
+        <td class="${isBest ? 'gold-hl' : 'highlight'}">${i === 0 ? 'One-time' : fmt(p.monthly)}</td>
+        <td style="color:${p.fee > 0 ? '#e07070' : 'var(--text-light)'}">${p.fee_label}</td>
+        <td class="${isBest ? 'gold-hl' : 'highlight'}">${fmt(p.total)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
